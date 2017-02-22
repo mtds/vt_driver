@@ -9,6 +9,7 @@
 import ConfigParser
 import json
 import hashlib
+import magic
 import sys
 import os
 from objectpath import *
@@ -36,6 +37,21 @@ if len(sys.argv) < 2:
 
 if not os.path.exists(sys.argv[1]):
     sys.exit('ERROR: Malware sample %s was not found!' % sys.argv[1])
+
+# Get the file size in bytes:
+# (used by ClamAV signatures)
+file_size = os.path.getsize(sys.argv[1])
+
+# Determine filetype: (use python-magic)
+file_type = magic.from_file(sys.argv[1],mime=True)
+
+# Only binary files should be analyzed:
+if (file_type == "text/plain"  or file_type == "ASCII text" ):
+    sys.exit('%s is a %s file: it will not be submitted to VirusTotal.' % (sys.argv[1],file_type))
+
+# Malware name: generate something like GSI_DateTime_FileType
+
+# Signature: sha256|sha1|md5:FileSize:MalwareName
 
 # Define the hasher based on the Hash algorithms in the config file:
 if hash_alg == 'sha1':
