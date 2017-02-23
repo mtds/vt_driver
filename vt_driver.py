@@ -4,7 +4,7 @@
 # Test driver for VirusTotal public API.
 #
 
-# ver 0.1
+# ver 0.2
 
 import ConfigParser
 import json
@@ -49,10 +49,6 @@ file_type = magic.from_file(sys.argv[1],mime=True)
 if (file_type == "text/plain"  or file_type == "ASCII text" ):
     sys.exit('%s is a %s file: it will not be submitted to VirusTotal.' % (sys.argv[1],file_type))
 
-# Malware name: generate something like GSI_DateTime_FileType
-
-# Signature: sha256|sha1|md5:FileSize:MalwareName
-
 # Define the hasher based on the Hash algorithms in the config file:
 if hash_alg == 'sha1':
     hasher = hashlib.sha1()
@@ -80,16 +76,34 @@ response = vt.get_file_report(MW_SAMPLE)
 # Acquire the report results in JSON format:
 tree=Tree(response)
 
+# Extract the signature hash from the VT report:
+# (Use ObjectPath to look for a specific key in the JSON tree)
+sig_hash = tree.execute("$.results." + hash_alg)
+
 # Check if the submitted sample hash is known on VirusTotal:
 if tree.execute("$.results.response_code"):
 
-    # It will (pretty) print the entire report in JSON format:
-    if config.getboolean('VirusTotal', 'full_report'):
-        print json.dumps(response, sort_keys=False, indent=4)
-    else:
-        # Use ObjectPath to look only for a specific key in the JSON tree:
-        result = tree.execute("$.results." + hash_alg)
-        # Just print the hash (in ASCII format) of the submitted file:
-        print result
+    if not config.getboolean('VirusTotal', 'quiet'):
+        # It will (pretty) print the entire report in JSON format:
+        if config.getboolean('VirusTotal', 'full_report'):
+            print json.dumps(response, sort_keys=False, indent=4)       
+        else:
+            # Just print the hash (in ASCII format) of the submitted file:
+            print sig_hash
+
+    # Create a ClamAV signature file:
+    if config.getboolean('VirusTotal', 'signature_gen'):
+
+        name_prefix = config.get('VirusTotal','name_prefix')
+
+        # Build the signature string name: it uses the prefix name + file type + first 6 characters of the hash.
+        sig_name = name_prefix+'.'+file_type.replace('/','_')+'.'+sig_hash[0:6]+'.UNOFFICIAL'
+
+        if 'sha' in hash_alg:
+            sig_file_name = name_prefix+'.hsb'
+        else:
+            sig_file_name = name_prefix+'.hdb'
+        with open(sig_file_name, 'a') as sig_file:
+            sig_file.write("%s:%s:%s\n" % (sig_hash,file_size,sig_name))
 else:
     print "No match for the submitted sample on VirusTotal."
