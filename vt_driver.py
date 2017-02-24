@@ -93,7 +93,7 @@ if tree.execute("$.results.response_code"):
         name_prefix = config.get('VirusTotal','name_prefix')
 
         # Build the signature string name: it uses the prefix name + file type + first 6 characters of the hash.
-        sig_name = name_prefix+'.'+file_type.replace('/','_')+'.'+sig_hash[0:6]+'.UNOFFICIAL'
+        sig_name = name_prefix+'.'+file_type.replace('/','_')+'.'+sig_hash[0:6]
 
         if 'sha' in hash_alg:
             sig_file_name = name_prefix+'.hsb'
