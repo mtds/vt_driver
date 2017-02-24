@@ -45,10 +45,6 @@ file_size = os.path.getsize(sys.argv[1])
 # Determine filetype: (use python-magic)
 file_type = magic.from_file(sys.argv[1],mime=True)
 
-# Only binary files should be analyzed:
-if (file_type == "text/plain"  or file_type == "ASCII text" ):
-    sys.exit('%s is a %s file: it will not be submitted to VirusTotal.' % (sys.argv[1],file_type))
-
 # Define the hasher based on the Hash algorithms in the config file:
 if hash_alg == 'sha1':
     hasher = hashlib.sha1()
