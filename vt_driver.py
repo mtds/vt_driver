@@ -42,6 +42,10 @@ if not os.path.exists(sys.argv[1]):
 # (used by ClamAV signatures)
 file_size = os.path.getsize(sys.argv[1])
 
+# If it's an empty file don't go any further:
+if file_size == 0:
+    sys.exit('ERROR: %s size is 0 bytes.' % sys.argv[1])
+
 # Determine filetype: (use python-magic)
 file_type = magic.from_file(sys.argv[1],mime=True)
 
