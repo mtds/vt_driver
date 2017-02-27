@@ -4,7 +4,7 @@
 # Test driver for VirusTotal public API.
 #
 
-# ver 0.2
+# ver 0.3
 
 import ConfigParser
 import json
@@ -117,4 +117,7 @@ if tree.execute("$.results.response_code"):
         with open(sig_file_name, 'a') as sig_file:
             sig_file.write("%s:%s:%s\n" % (sig_hash,file_size,sig_name))
 else:
-    print "No match for the submitted sample on VirusTotal."
+    if not config.getboolean('VirusTotal', 'quiet'):
+        print "No match for the submitted sample on VirusTotal."
+        if config.getboolean('VirusTotal', 'full_report'):
+            print json.dumps(response, sort_keys=False, indent=4)       
