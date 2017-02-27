@@ -14,6 +14,7 @@ import sys
 import os
 from objectpath import *
 from virus_total_apis import PublicApi as VirusTotalPublicApi
+from vt_persistence import check_Db,insert_Data,check_Record
 
 #
 # Read the VT public API Key from 'vt_config.cfg':
@@ -65,13 +66,13 @@ with open(sys.argv[1], "rb") as malware:
         buf = malware.read(BLOCKSIZE)
 
 # Get the hash of the sample in HEX format:
-MW_SAMPLE = hasher.hexdigest()
+HASH_SAMPLE = hasher.hexdigest()
 
 # Access the VT API:
 vt = VirusTotalPublicApi(API_KEY)
 
 # Get a full report (it's in JSON format):
-response = vt.get_file_report(MW_SAMPLE)
+response = vt.get_file_report(HASH_SAMPLE)
 
 # Acquire the report results in JSON format:
 tree=Tree(response)
@@ -98,6 +99,16 @@ if tree.execute("$.results.response_code"):
 
         # Build the signature string name: it uses the prefix name + file type + first 6 characters of the hash.
         sig_name = name_prefix+'.'+file_type.replace('/','_')+'.'+sig_hash[0:6]
+
+        if config.getboolean('VirusTotal','persistence'):
+            # Verify if the SQLite Db is available:
+            check_Db()
+
+            # Sample was already analyzed?
+            if check_Record(sig_hash) is None:
+                insert_Data(sig_hash,sig_name)
+            else:
+                sys.exit('WARNING: the submitted sample was already analyzed. Signature archive will not be updated.')
 
         if 'sha' in hash_alg:
             sig_file_name = name_prefix+'.hsb'
