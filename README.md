@@ -26,6 +26,17 @@ Available configuration parameters:
 - persistence: if 'true' the script will keep track of the submitted samples on a SQLite Db.
 - name_prefix: a string used as a prefix for the ClamAV signature.
 
+Internals
+=========
+
+VirusTotal API response code:
+
+- if the item you searched for was not present in VirusTotal's dataset this result will be 0.
+- if the requested item is still queued for analysis it will be -2.
+- if the item was indeed present and it could be retrieved it will be 1.
+
+- https://www.virustotal.com/en/documentation/public-api/#response-basics
+
 Python requirements
 ===================
 
