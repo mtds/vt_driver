@@ -77,6 +77,10 @@ response = vt.get_file_report(HASH_SAMPLE)
 # Acquire the report results in JSON format:
 tree=Tree(response)
 
+# Check VT API usage rate limit:
+if tree.execute("$.response_code") == 204:
+    sys.exit('WARNING: exceeded VirusTotal API rate requests limit (wait five minutes and try again).')
+
 # Extract the signature hash from the VT report:
 # (Use ObjectPath to look for a specific key in the JSON tree)
 sig_hash = tree.execute("$.results." + hash_alg)
