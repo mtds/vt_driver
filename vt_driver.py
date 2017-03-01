@@ -82,7 +82,7 @@ tree=Tree(response)
 sig_hash = tree.execute("$.results." + hash_alg)
 
 # Check if the submitted sample hash is known on VirusTotal:
-if tree.execute("$.results.response_code"):
+if tree.execute("$.results.response_code") == 1:
 
     if not config.getboolean('VirusTotal', 'quiet'):
         # It will (pretty) print the entire report in JSON format:
