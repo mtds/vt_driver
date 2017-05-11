@@ -46,7 +46,7 @@ file_size = os.path.getsize(sys.argv[1])
 # If it's an empty file don't go any further:
 if file_size == 0:
     sys.exit('ERROR: %s size is 0 bytes.' % sys.argv[1])
-elif file_size > 33554432:
+elif file_size > 33554432: # max 32MB for the API interface (https://www.virustotal.com/en/faq/)
     sys.exit('ERROR: %s size is bigger than 32 MB.' % sys.argv[1])
 
 # Determine filetype: (use python-magic)
