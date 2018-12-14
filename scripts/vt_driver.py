@@ -4,53 +4,77 @@
 # Test driver for VirusTotal public API.
 #
 
-# ver 0.3
+# ver 0.4
 
 import ConfigParser
+import getopt
 import hashlib
 import magic
 from json import dumps
 from objectpath import *
 from os import path
-from sys import exit
+from sys import argv,exit
 from virus_total_apis import PublicApi as VirusTotalPublicApi
 from vt_persistence import check_Db,insert_Data,check_Record
 
-#
-# Read the VT public API Key from 'vt_config.cfg':
-#
+# Initialize the parser:
 config = ConfigParser.RawConfigParser()
-config.read('vt_config.cfg')
 
-API_KEY = config.get('VirusTotal', 'API_KEY')
+# Read cmd line arguments:
+try:
+    opts, args = getopt.getopt(sys.argv[1:],"hf:s:")
+except getopt.GetoptError, err:
+    print str(err)
+    print sys.argv[0] + ' -f <cfgfile> -s malware-sample'
+    sys.exit(2) # UNIX convention: cmd line syntax error.
 
-# Get the hashing algorithm:
-hash_alg = config.get('VirusTotal','hashlib_alg')
+# Cycle through the arguments passed from cmd line:
+for opt, arg in opts:
+   if opt == '-h':
+      print sys.argv[0] + ' -f <cfgfile> -s malware-sample'
+      sys.exit(0)
+   if opt == '-f':
+      try:
+          config.read(arg)
+      except ConfigParser.ParsingError, err:
+          print('ERROR: Could not parse:'), err
+          sys.exit(1)
+   if opt == '-s':
+      sample = arg
+
+# Get the VirusTotal API key and the hashing algorithm from the config file:
+try:
+    API_KEY = config.get('VirusTotal', 'API_KEY')
+    hash_alg = config.get('VirusTotal','hashlib_alg')
+except ConfigParser.NoSectionError, err:
+    print('ERROR: Config file problem:'), err
+    sys.exit(1)
+
+# If 'sample' is not defined it means the '-s' parameter was not set correctly:
+if not 'sample' in globals():
+    print('ERROR: the -s parameter was not used.')
+    sys.exit(2)
 
 # Block sizes used to acquire the malware sample in binary format:
 BLOCKSIZE = 65536
 
-#
-# Get the malware filename from the cmd line:
-#
-if len(sys.argv) < 2:
-    sys.exit('Usage: %s malware_file' % sys.argv[0])
-
-if not path.exists(sys.argv[1]):
-    sys.exit('ERROR: Malware sample %s was not found!' % sys.argv[1])
+# Check if the malware sample exists:
+if not path.exists(sample):
+   print('ERROR: %s does not exist.' % sample)
+   sys.exit(1)
 
 # Get the file size in bytes:
 # (used by ClamAV signatures)
-file_size = path.getsize(sys.argv[1])
+file_size = path.getsize(sample)
 
 # If it's an empty file don't go any further:
 if file_size == 0:
-    sys.exit('ERROR: %s size is 0 bytes.' % sys.argv[1])
+    sys.exit('ERROR: %s size is 0 bytes.' % sample)
 elif file_size > 33554432: # max 32MB for the API interface (https://www.virustotal.com/en/faq/)
-    sys.exit('ERROR: %s size is bigger than 32 MB.' % sys.argv[1])
+    sys.exit('ERROR: %s size is bigger than 32 MB.' % sample)
 
 # Determine filetype: (use python-magic)
-file_type = magic.from_file(sys.argv[1],mime=True)
+file_type = magic.from_file(sample,mime=True)
 
 # Define the hasher based on the Hash algorithms in the config file:
 if hash_alg == 'sha1':
@@ -61,7 +85,7 @@ else:
     hasher = hashlib.md5()
 
 # Read the malware file in chunks:
-with open(sys.argv[1], "rb") as malware:
+with open(sample, "rb") as malware:
     buf = malware.read(BLOCKSIZE)
     while len(buf) > 0:
         hasher.update(buf)
