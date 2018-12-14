@@ -7,12 +7,12 @@
 # ver 0.3
 
 import ConfigParser
-import json
 import hashlib
 import magic
-import sys
-import os
+from json import dumps
 from objectpath import *
+from os import path
+from sys import exit
 from virus_total_apis import PublicApi as VirusTotalPublicApi
 from vt_persistence import check_Db,insert_Data,check_Record
 
@@ -36,12 +36,12 @@ BLOCKSIZE = 65536
 if len(sys.argv) < 2:
     sys.exit('Usage: %s malware_file' % sys.argv[0])
 
-if not os.path.exists(sys.argv[1]):
+if not path.exists(sys.argv[1]):
     sys.exit('ERROR: Malware sample %s was not found!' % sys.argv[1])
 
 # Get the file size in bytes:
 # (used by ClamAV signatures)
-file_size = os.path.getsize(sys.argv[1])
+file_size = path.getsize(sys.argv[1])
 
 # If it's an empty file don't go any further:
 if file_size == 0:
@@ -93,7 +93,7 @@ if tree.execute("$.results.response_code") == 1:
     if not config.getboolean('VirusTotal', 'quiet'):
         # It will (pretty) print the entire report in JSON format:
         if config.getboolean('VirusTotal', 'full_report'):
-            print json.dumps(response, sort_keys=False, indent=4)       
+            print dumps(response, sort_keys=False, indent=4)
         else:
             # Just print the hash (in ASCII format) of the submitted file:
             print sig_hash
@@ -126,4 +126,4 @@ else:
     if not config.getboolean('VirusTotal', 'quiet'):
         print "No match for the submitted sample on VirusTotal."
         if config.getboolean('VirusTotal', 'full_report'):
-            print json.dumps(response, sort_keys=False, indent=4)       
+            print dumps(response, sort_keys=False, indent=4)
