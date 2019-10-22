@@ -35,10 +35,14 @@ Reference: https://www.virustotal.com/en/documentation/public-api/#response-basi
 ## Python requirements
 
 - Objectpath
+- SimpleJSON
+- Python-Magic
 - VirusTotal API
 
 ```
 pip install objectpath
+pip install simplejson
+pip install python-magic
 pip install virustotal-api
 ```
 
@@ -47,6 +51,7 @@ In order to run a quick test it would be easier to install those modules through
 ## References
 
 - https://www.virustotal.com/en/documentation/public-api/
-- https://pypi.python.org/pypi/virustotal-api
-- https://pypi.python.org/pypi/objectpath
-
+- https://pypi.org/project/virustotal-api
+- https://pypi.org/project/objectpath
+- https://pypi.org/project/simplejson/
+- https://pypi.org/project/python-magic/
