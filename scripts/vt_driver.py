@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 # Test driver for VirusTotal public API.
@@ -6,7 +6,7 @@
 
 # ver 0.4
 
-import ConfigParser
+import configparser
 import getopt
 import hashlib
 import magic
@@ -18,26 +18,26 @@ from virus_total_apis import PublicApi as VirusTotalPublicApi
 from vt_persistence import check_Db,insert_Data,check_Record
 
 # Initialize the parser:
-config = ConfigParser.RawConfigParser()
+config = configparser.RawConfigParser()
 
 # Read cmd line arguments:
 try:
     opts, args = getopt.getopt(sys.argv[1:],"hf:s:")
-except getopt.GetoptError, err:
-    print str(err)
-    print sys.argv[0] + ' -f <cfgfile> -s malware-sample'
+except getopt.GetoptError as err:
+    print(str(err))
+    print(sys.argv[0] + ' -f <cfgfile> -s malware-sample')
     sys.exit(2) # UNIX convention: cmd line syntax error.
 
 # Cycle through the arguments passed from cmd line:
 for opt, arg in opts:
    if opt == '-h':
-      print sys.argv[0] + ' -f <cfgfile> -s malware-sample'
+      print(sys.argv[0] + ' -f <cfgfile> -s malware-sample')
       sys.exit(0)
    if opt == '-f':
       try:
           config.read(arg)
-      except ConfigParser.ParsingError, err:
-          print('ERROR: Could not parse:'), err
+      except configparser.ParsingError as err:
+          print(('ERROR: Could not parse:'), err)
           sys.exit(1)
    if opt == '-s':
       sample = arg
@@ -46,8 +46,8 @@ for opt, arg in opts:
 try:
     API_KEY = config.get('VirusTotal', 'API_KEY')
     hash_alg = config.get('VirusTotal','hashlib_alg')
-except ConfigParser.NoSectionError, err:
-    print('ERROR: Config file problem:'), err
+except configparser.NoSectionError as err:
+    print(('ERROR: Config file problem:'), err)
     sys.exit(1)
 
 # If 'sample' is not defined it means the '-s' parameter was not set correctly:
@@ -60,7 +60,7 @@ BLOCKSIZE = 65536
 
 # Check if the malware sample exists:
 if not path.exists(sample):
-   print('ERROR: %s does not exist.' % sample)
+   print(('ERROR: %s does not exist.' % sample))
    sys.exit(1)
 
 # Get the file size in bytes:
@@ -117,10 +117,10 @@ if tree.execute("$.results.response_code") == 1:
     if not config.getboolean('VirusTotal', 'quiet'):
         # It will (pretty) print the entire report in JSON format:
         if config.getboolean('VirusTotal', 'full_report'):
-            print dumps(response, sort_keys=False, indent=4)
+            print(dumps(response, sort_keys=False, indent=4))
         else:
             # Just print the hash (in ASCII format) of the submitted file:
-            print sig_hash
+            print(sig_hash)
 
     # Create a ClamAV signature file:
     if config.getboolean('VirusTotal', 'signature_gen'):
@@ -148,6 +148,6 @@ if tree.execute("$.results.response_code") == 1:
             sig_file.write("%s:%s:%s\n" % (sig_hash,file_size,sig_name))
 else:
     if not config.getboolean('VirusTotal', 'quiet'):
-        print "No match for the submitted sample on VirusTotal."
+        print("No match for the submitted sample on VirusTotal.")
         if config.getboolean('VirusTotal', 'full_report'):
-            print dumps(response, sort_keys=False, indent=4)
+            print(dumps(response, sort_keys=False, indent=4))
