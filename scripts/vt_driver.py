@@ -4,7 +4,7 @@
 # Test driver for VirusTotal public API.
 #
 
-# ver 0.4
+# ver 0.5
 
 import configparser
 import getopt
