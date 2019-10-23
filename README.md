@@ -18,7 +18,7 @@ The template [config/vt_config_template.cfg](config/vt_config_template.cfg) can 
 
 Available configuration parameters are the following:
 
-- *API_KEY*: to access the public API of VirusTotal a user has to be registered.
+- *API_KEY*: to access the public or private API of VirusTotal a user has to be registered.
 - *quiet*: if 'false' the script will not report any output.
 - *full_report*: if 'true' and 'quiet' is set to 'false' then full report from VirusTotal will be printed.
 - *hashlib_alg*: hashing algorithms (available options are: sha1, sha256 or md5).
@@ -35,6 +35,15 @@ The internal behaviour of the script is based on the response code from the Viru
 - if the item was indeed present and it could be retrieved it will be **1**.
 
 Reference: [VirusTotal API responses](https://developers.virustotal.com/reference#api-responses)
+
+## Public vs Private VirusTotal API
+
+Note that according to the [documentation](https://developers.virustotal.com/reference#public-vs-private-api), there are some explicit limits in using the Public API of VirusTotal:
+
+* The Public API is limited to **4** requests per minute.
+* The Public API must not be used in commercial products or services.
+* The Private API returns more threat data and exposes more endpoints.
+* The Private API is governed by an SLA that guarantees readiness of data.
 
 ## Required Python modules
 
