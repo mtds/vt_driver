@@ -1,8 +1,12 @@
 ## Description
 
-'__vt_driver.py__' is a small Python utility which rely on the VirusTotal API in order to verify if a file was already identified as malware.
+'__vt_driver.py__' is a small Python utility which rely on the [VirusTotal API](https://developers.virustotal.com/reference) in order to verify if a file was already identified as malware.
 
-*API Key*: in order to work this script needs a valid VirusTotal API key, which can be obtained by registering [here.](https://www.virustotal.com/en/#signup)
+*API Key*: in order to work this script needs a valid VirusTotal API key, which can be obtained by registering yourself [here](https://www.virustotal.com/gui/join-us).
+
+## Python 2 vs. 3
+
+Starting from version tagged **0.5**, this script is meant to be executed using Python version **3.x**. Otherwise use the version tagged as **0.4**.
 
 ## Usage
 
@@ -30,28 +34,29 @@ The internal behaviour of the script is based on the response code from the Viru
 - if the requested item is still queued for analysis it will be **-2**.
 - if the item was indeed present and it could be retrieved it will be **1**.
 
-Reference: https://www.virustotal.com/en/documentation/public-api/#response-basics
+Reference: [VirusTotal API responses](https://developers.virustotal.com/reference#api-responses)
 
-## Python requirements
+## Required Python modules
 
 - Objectpath
 - SimpleJSON
 - Python-Magic
 - VirusTotal API
 
-```
-pip install objectpath
-pip install simplejson
-pip install python-magic
-pip install virustotal-api
+To install all the required modules:
+```bash
+>>> pip install -r requirements.txt
 ```
 
-In order to run a quick test it would be easier to install those modules through _VirtualEnv_.
+In order to run a quick test it would be easier to install the ``vt_driver.py`` script and its required modules in a virtual environment. Two methods are available:
+
+* If you are using python 2.7.x, it's better to setup a virtual environment through [VirtualEnv](https://realpython.com/python-virtual-environments-a-primer/).
+* If you are using python 3.x, the recommended way to setup a virtual environment is through [venv](https://docs.python.org/3/tutorial/venv.html).
 
 ## References
 
-- https://www.virustotal.com/en/documentation/public-api/
-- https://pypi.org/project/virustotal-api
-- https://pypi.org/project/objectpath
-- https://pypi.org/project/simplejson/
-- https://pypi.org/project/python-magic/
+- [VirusTotal: getting started](https://developers.virustotal.com/reference#getting-started)
+- [VirusTotal API on Pypi.org](https://pypi.org/project/virustotal-api)
+- [ObjectPath: a NoSQL query language for semi-structured data](https://pypi.org/project/objectpath)
+- [SimpleJSON: simple, fast, extensible JSON encoder/decoder for Python](https://pypi.org/project/simplejson/)
+- [Python-Magic: file type identification using libmagic](https://pypi.org/project/python-magic/)
