@@ -1,2 +1,4 @@
-vt_config.cfg
+*.hdb
+*.hsb
 samples/
+vt_config.cfg
