@@ -62,6 +62,12 @@ In order to run a quick test it would be easier to install the ``vt_driver.py`` 
 * If you are using python 2.7.x, it's better to setup a virtual environment through [VirtualEnv](https://realpython.com/python-virtual-environments-a-primer/).
 * If you are using python 3.x, the recommended way to setup a virtual environment is through [venv](https://docs.python.org/3/tutorial/venv.html).
 
+## Samples
+
+* **NOTE**: The material available at these URLs may be extremely dangerous to your computer and your internal network. These URLs are provided solely to test the scripts against the VirusTotal API entry points. **YOU HAVE BEEN WARNED**:
+  - [URLhaus Database](https://urlhaus.abuse.ch/browse/)
+  - [Malware Bazaar](https://bazaar.abuse.ch/browse/)
+
 ## References
 
 - [VirusTotal: getting started](https://developers.virustotal.com/reference#getting-started)
