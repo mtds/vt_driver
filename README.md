@@ -60,11 +60,11 @@ The internal behaviour of the script is based on the response code from the Viru
 
 Reference: [VirusTotal API responses](https://developers.virustotal.com/reference#api-responses)
 
-## Public vs Private VirusTotal API
+## Public vs Premium VirusTotal API
 
-Note that according to the [documentation](https://developers.virustotal.com/reference#public-vs-private-api), there are some explicit limits in using the Public API of VirusTotal:
+Note that according to the [documentation](https://developers.virustotal.com/reference/public-vs-premium-api), there are some explicit limits in using the Public API of VirusTotal:
 
-* The Public API is limited to **4** requests per minute.
+* The Public API is limited to **4** requests per minute and a total of **500** requests per day.
 * The Public API must not be used in commercial products or services.
 * The Private API returns more threat data and exposes more endpoints.
 * The Private API is governed by an SLA that guarantees readiness of data.
