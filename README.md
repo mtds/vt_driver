@@ -26,6 +26,30 @@ Available configuration parameters are the following:
 - *persistence*: if 'true' the script will keep track of the submitted samples on a SQLite Db.
 - *name_prefix*: a string used as a prefix for the ClamAV signature.
 
+## Additional Drivers
+
+The following scripts are available in the [scripts/](scripts/) directory:
+
+### vt_ip_driver.py
+
+Checks an IP address against the VirusTotal v3 API.
+
+```
+>>> vt_ip_driver.py -f config_file -i <ip_address>
+```
+
+Uses the same config file template as the main driver. Supports the *quiet* and *full_report* parameters.
+
+### vt_url_driver.py
+
+Analyzes a URL using the VirusTotal v3 API.
+
+```
+>>> vt_url_driver.py -f config_file -u <url>
+```
+
+Submits the URL for analysis and polls until results are available. Uses the same config file template. Supports the *quiet* and *full_report* parameters.
+
 ## VirusTotal API
 
 The internal behaviour of the script is based on the response code from the VirusTotal API:
